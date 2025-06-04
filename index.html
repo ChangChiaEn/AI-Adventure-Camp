@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Adventure Camp – 探索未來的小冒險家</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Caveat:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary: #ff6b35;
+      --secondary: #f7931e;
+      --accent: #4ecdc4;
+      --bg-primary: #fef9f3;
+      --bg-secondary: #fff;
+      --text-primary: #2d3748;
+      --text-secondary: #4a5568;
+      --text-light: #718096;
+      --border: #e2e8f0;
+      --shadow: 0 4px 20px rgba(0,0,0,0.08);
+      --shadow-hover: 0 8px 30px rgba(0,0,0,0.12);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    .handwriting {
+      font-family: 'Caveat', cursive;
+    }
+
+    /* ===== 裝飾性背景元素 ===== */
+    .bg-shapes {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+      overflow: hidden;
+    }
+
+    .shape {
+      position: absolute;
+      opacity: 0.03;
+    }
+
+    .shape-1 {
+      top: 10%;
+      right: 15%;
+      width: 200px;
+      height: 200px;
+      background: var(--primary);
+      border-radius: 50%;
+      animation: float 20s ease-in-out infinite;
+    }
+
+    .shape-2 {
+      top: 60%;
+      left: 10%;
+      width: 150px;
+      height: 150px;
+      background: var(--accent);
+      transform: rotate(45deg);
+      animation: float 25s ease-in-out infinite reverse;
+    }
+
+    .shape-3 {
+      bottom: 20%;
+      right: 20%;
+      width: 180px;
+      height: 180px;
+      background: var(--secondary);
+      clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+      animation: float 18s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(10deg); }
+    }
+
+    /* ===== 容器 ===== */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* ===== Header ===== */
+    .header {
+      background: linear-gradient(135deg, var(--bg-secondary) 0%, #fff8f0 100%);
+      padding: 80px 0 100px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(255,107,53,0.1) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+
+    .header-content {
+      text-align: center;
+      position: relative;
+      z-index: 2;
+    }
+
+    .camp-badge {
+      display: inline-block;
+      background: var(--accent);
+      color: white;
+      padding: 8px 20px;
+      border-radius: 25px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      margin-bottom: 20px;
+      transform: rotate(-2deg);
+    }
+
+    .main-title {
+      font-size: 3.5rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 15px;
+      line-height: 1.1;
+    }
+
+    .title-accent {
+      color: var(--primary);
+      position: relative;
+    }
+
+    .title-accent::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 100%;
+      height: 8px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      opacity: 0.3;
+      border-radius: 4px;
+    }
+
+    .subtitle {
+      font-size: 1.3rem;
+      color: var(--text-secondary);
+      margin-bottom: 30px;
+    }
+
+    .date-info {
+      display: inline-flex;
+      align-items: center;
+      background: white;
+      padding: 15px 25px;
+      border-radius: 50px;
+      box-shadow: var(--shadow);
+      font-weight: 600;
+      color: var(--text-primary);
+      border: 2px solid var(--border);
+    }
+
+    .date-icon {
+      width: 20px;
+      height: 20px;
+      margin-right: 10px;
+      fill: var(--primary);
+    }
+
+    /* ===== 倒數計時 ===== */
+    .countdown-section {
+      padding: 80px 0;
+      background: white;
+    }
+
+    .section-title {
+      text-align: center;
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 20px;
+    }
+
+    .section-subtitle {
+      text-align: center;
+      font-size: 1.1rem;
+      color: var(--text-light);
+      margin-bottom: 50px;
+      font-class: 'handwriting';
+    }
+
+    .countdown-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 20px;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .countdown-item {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      padding: 30px 20px;
+      border-radius: 20px;
+      text-align: center;
+      box-shadow: var(--shadow);
+      transition: transform 0.3s ease;
+    }
+
+    .countdown-item:hover {
+      transform: translateY(-5px);
+    }
+
+    .countdown-number {
+      font-size: 3rem;
+      font-weight: 700;
+      line-height: 1;
+      margin-bottom: 5px;
+    }
+
+    .countdown-label {
+      font-size: 0.9rem;
+      opacity: 0.9;
+      font-weight: 500;
+    }
+
+    /* ===== 特色區塊 ===== */
+    .features-section {
+      padding: 80px 0;
+      background: var(--bg-primary);
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 30px;
+      margin-top: 50px;
+    }
+
+    .feature-card {
+      background: white;
+      padding: 40px 30px;
+      border-radius: 25px;
+      text-align: center;
+      box-shadow: var(--shadow);
+      transition: all 0.3s ease;
+      border: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-8px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
+    }
+
+    .feature-icon {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 20px;
+      background: linear-gradient(135deg, rgba(255,107,53,0.1), rgba(78,205,196,0.1));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .feature-icon svg {
+      width: 40px;
+      height: 40px;
+      fill: var(--primary);
+    }
+
+    .feature-title {
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 15px;
+    }
+
+    .feature-desc {
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+
+    /* ===== 師資團隊 ===== */
+    .teachers-section {
+      padding: 80px 0;
+      background: white;
+    }
+
+    .teachers-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 40px;
+      margin-top: 50px;
+    }
+
+    .teacher-card {
+      background: linear-gradient(135deg, #f8fafc 0%, #fff 100%);
+      padding: 40px;
+      border-radius: 25px;
+      box-shadow: var(--shadow);
+      transition: all 0.3s ease;
+      border: 1px solid var(--border);
+    }
+
+    .teacher-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .teacher-avatar {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, var(--accent), #4db6ac);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .teacher-avatar svg {
+      width: 40px;
+      height: 40px;
+      fill: white;
+    }
+
+    .teacher-name {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+
+    .teacher-degree {
+      font-size: 0.9rem;
+      color: var(--primary);
+      font-weight: 500;
+      margin-bottom: 15px;
+    }
+
+    .teacher-bio {
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+
+    /* ===== 報名表單 ===== */
+    .registration-section {
+      padding: 80px 0;
+      background: var(--bg-primary);
+    }
+
+    .form-container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: white;
+      padding: 50px;
+      border-radius: 25px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 25px;
+      margin-bottom: 25px;
+    }
+
+    .form-group {
+      margin-bottom: 25px;
+    }
+
+    .form-group.full-width {
+      grid-column: 1 / -1;
+    }
+
+    .form-label {
+      display: block;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+
+    .form-input, .form-select, .form-textarea {
+      width: 100%;
+      padding: 15px 18px;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      background: white;
+    }
+
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(255,107,53,0.1);
+    }
+
+    .radio-group {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .radio-option {
+      display: flex;
+      align-items: center;
+      padding: 10px 15px;
+      border: 2px solid var(--border);
+      border-radius: 25px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .radio-option:hover {
+      border-color: var(--primary);
+    }
+
+    .radio-option input[type="radio"] {
+      margin-right: 8px;
+    }
+
+    .radio-option input[type="radio"]:checked + .radio-label {
+      color: var(--primary);
+      font-weight: 500;
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 18px 0;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: var(--shadow);
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .submit-btn:active {
+      transform: translateY(0);
+    }
+
+    /* ===== 重要提醒 ===== */
+    .info-box {
+      background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+      border: 1px solid #ffc107;
+      border-radius: 20px;
+      padding: 30px;
+      margin-top: 40px;
+    }
+
+    .info-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #856404;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+    }
+
+    .info-icon {
+      width: 24px;
+      height: 24px;
+      margin-right: 10px;
+      fill: #856404;
+    }
+
+    .info-list {
+      list-style: none;
+      color: #856404;
+    }
+
+    .info-list li {
+      margin-bottom: 8px;
+      padding-left: 20px;
+      position: relative;
+    }
+
+    .info-list li::before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      color: #28a745;
+      font-weight: bold;
+    }
+
+    /* ===== 價格區塊 ===== */
+    .pricing-section {
+      margin-top: 40px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .pricing-card {
+      background: white;
+      padding: 30px 40px;
+      border-radius: 25px;
+      text-align: center;
+      box-shadow: var(--shadow-hover);
+      border: 2px solid var(--primary);
+      position: relative;
+      transform: scale(1.05);
+    }
+
+    .price-badge {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      padding: 8px 20px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      box-shadow: 0 4px 15px rgba(255,107,53,0.3);
+    }
+
+    .price-badge.early-bird {
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: translateX(-50%) scale(1); }
+      50% { transform: translateX(-50%) scale(1.1); }
+    }
+
+    .current-price {
+      font-size: 3rem;
+      font-weight: 700;
+      color: var(--primary);
+      line-height: 1;
+      margin: 15px 0 5px;
+    }
+
+    .original-price {
+      font-size: 1.1rem;
+      color: var(--text-light);
+      text-decoration: line-through;
+      margin-bottom: 8px;
+    }
+
+    .savings {
+      font-size: 1rem;
+      color: #28a745;
+      font-weight: 600;
+      background: rgba(40, 167, 69, 0.1);
+      padding: 5px 15px;
+      border-radius: 15px;
+      display: inline-block;
+    }
+
+    /* ===== 動畫效果 ===== */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.8s ease;
+    }
+
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ===== 響應式設計 ===== */
+    @media (max-width: 768px) {
+      .main-title {
+        font-size: 2.5rem;
+      }
+      
+      .pricing-card {
+        transform: none;
+        margin: 0 15px;
+      }
+      
+      .current-price {
+        font-size: 2.5rem;
+      }
+      
+      .form-container {
+        padding: 30px 20px;
+        margin: 0 15px;
+      }
+      
+      .header {
+        padding: 60px 0 80px;
+      }
+      
+      .countdown-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 480px) {
+      .countdown-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .radio-group {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="bg-shapes">
+    <div class="shape shape-1"></div>
+    <div class="shape shape-2"></div>
+    <div class="shape shape-3"></div>
+  </div>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="container">
+      <div class="header-content fade-in">
+        <div class="camp-badge">Summer 2025</div>
+        <h1 class="main-title">
+          <span class="title-accent">AI Adventure</span> Camp
+        </h1>
+        <p class="subtitle">為 1-3 年級小朋友打造的全英文科技探險之旅</p>
+        <div class="date-info">
+          <svg class="date-icon" viewBox="0 0 24 24">
+            <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>
+          </svg>
+          2025年7月14日 - 16日
+        </div>
+        
+        <!-- Pricing Section -->
+        <div class="pricing-section">
+          <div class="pricing-card">
+            <div class="price-badge early-bird">早鳥優惠</div>
+            <div class="current-price">$16,800</div>
+            <div class="original-price">原價 $19,800</div>
+            <div class="savings">現省 $3,000</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Countdown -->
+  <section class="countdown-section">
+    <div class="container">
+      <h2 class="section-title fade-in">營隊倒數計時</h2>
+      <p class="section-subtitle handwriting fade-in">Adventure begins soon!</p>
+      <div class="countdown-grid fade-in">
+        <div class="countdown-item">
+          <div id="days" class="countdown-number">00</div>
+          <div class="countdown-label">天 DAYS</div>
+        </div>
+        <div class="countdown-item">
+          <div id="hours" class="countdown-number">00</div>
+          <div class="countdown-label">時 HOURS</div>
+        </div>
+        <div class="countdown-item">
+          <div id="minutes" class="countdown-number">00</div>
+          <div class="countdown-label">分 MINUTES</div>
+        </div>
+        <div class="countdown-item">
+          <div id="seconds" class="countdown-number">00</div>
+          <div class="countdown-label">秒 SECONDS</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="features-section">
+    <div class="container">
+      <h2 class="section-title fade-in">營隊特色</h2>
+      <p class="section-subtitle handwriting fade-in">What makes us special?</p>
+      <div class="features-grid">
+        <div class="feature-card fade-in">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+            </svg>
+          </div>
+          <h3 class="feature-title">趣味AI探索</h3>
+          <p class="feature-desc">透過遊戲和互動體驗，讓孩子在玩樂中認識人工智慧，培養對科技的好奇心與理解力。</p>
+        </div>
+        
+        <div class="feature-card fade-in">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+            </svg>
+          </div>
+          <h3 class="feature-title">全英文沉浸</h3>
+          <p class="feature-desc">創造自然的英語學習環境，讓孩子在輕鬆愉快的氛圍中提升英語能力。</p>
+        </div>
+        
+        <div class="feature-card fade-in">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24">
+              <path d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 10H3V8h18v8z"/>
+            </svg>
+          </div>
+          <h3 class="feature-title">遊戲化學習</h3>
+          <p class="feature-desc">採用遊戲化教學方式，讓學習變得有趣且有效，激發孩子的學習動機。</p>
+        </div>
+        
+        <div class="feature-card fade-in">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24">
+              <path d="M16 4c0-1.11.89-2 2-2s2 .89 2 2-.89 2-2 2-2-.89-2-2zM4 18v-4h2v-2.5c0-1.1.9-2 2-2h2V7H8c-1.1 0-2 .9-2 2v2.5H4V18zm14-7.5V8h-2c-1.1 0-2 .9-2 2v1.5h2V14c0 1.1.9 2 2 2h2c1.1 0 2-.9 2-2v-1.5h-2z"/>
+            </svg>
+          </div>
+          <h3 class="feature-title">小班制教學</h3>
+          <p class="feature-desc">採用小班制，確保每位學員都能獲得充分的關注和個別指導。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Teachers -->
+  <section class="teachers-section">
+    <div class="container">
+      <h2 class="section-title fade-in">師資團隊</h2>
+      <p class="section-subtitle handwriting fade-in">Meet our amazing teachers!</p>
+      <div class="teachers-grid">
+        <div class="teacher-card fade-in">
+          <div class="teacher-avatar">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+            </svg>
+          </div>
+          <h3 class="teacher-name">James 老師</h3>
+          <p class="teacher-degree">Computer Science, University of Arizona</p>
+          <p class="teacher-bio">專精於遊戲化教學，擅長將複雜的科技概念轉化為有趣的學習體驗。致力於培養孩子對科技的興趣與英語表達能力。</p>
+        </div>
+        
+        <div class="teacher-card fade-in">
+          <div class="teacher-avatar">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+            </svg>
+          </div>
+          <h3 class="teacher-name">Max 老師</h3>
+          <p class="teacher-degree">M.S., USC – Biomedical Data Analytics</p>
+          <p class="teacher-bio">具有豐富的數據分析背景，善於用邏輯思維和實際案例來啟發學生。創造活潑且具挑戰性的學習環境。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Registration -->
+  <section class="registration-section">
+    <div class="container">
+      <h2 class="section-title fade-in">立即報名</h2>
+      <p class="section-subtitle handwriting fade-in">Join the adventure!</p>
+      <div class="form-container fade-in">
+        <form id="registrationForm" action="https://formspree.io/f/xzzgzzpb" method="POST">
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label" for="studentName">學生姓名 *</label>
+              <input class="form-input" id="studentName" name="studentName" required />
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label" for="grade">年級 *</label>
+              <select class="form-select" id="grade" name="grade" required>
+                <option value="">請選擇年級</option>
+                <option value="1">一年級</option>
+                <option value="2">二年級</option>
+                <option value="3">三年級</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label" for="parentName">家長姓名 *</label>
+              <input class="form-input" id="parentName" name="parentName" required />
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label" for="phone">聯絡電話 *</label>
+              <input class="form-input" id="phone" name="phone" required />
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" for="email">Email *</label>
+            <input class="form-input" type="email" id="email" name="email" required />
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">孩子的英文程度 *</label>
+            <div class="radio-group">
+              <label class="radio-option">
+                <input type="radio" name="englishLevel" value="beginner" required />
+                <span class="radio-label">初學者</span>
+              </label>
+              <label class="radio-option">
+                <input type="radio" name="englishLevel" value="intermediate" required />
+                <span class="radio-label">中等程度</span>
+              </label>
+              <label class="radio-option">
+                <input type="radio" name="englishLevel" value="advanced" required />
+                <span class="radio-label">進階程度</span>
+              </label>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="message">其他備註</label>
+            <textarea class="form-textarea" id="message" name="message" rows="4" placeholder="有任何想讓我們知道的事情嗎？"></textarea>
+          </div>
+          
+          <button type="submit" class="submit-btn">送出報名表</button>
+        </form>
+
+        <div class="info-box">
+          <h4 class="info-title">
+            <svg class="info-icon" viewBox="0 0 24 24">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+            </svg>
+            重要資訊
+          </h4>
+          <ul class="info-list">
+            <li>營隊日期：2025年7月14日至16日（週一至週三）</li>
+            <li>活動時間：上午9:00至下午4:00</li>
+            <li>參加對象：小學1-3年級學生</li>
+            <li>授課語言：全程英文教學</li>
+            <li>報名截止：2025年7月7日</li>
+            <li>小班制教學，名額有限，請儘早報名</li>
+            <li>早鳥優惠截止：2025年6月30日</li>
+            <li>報名費用：早鳥價 $16,800（原價 $19,800）</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // 倒數計時功能
+    function updateCountdown() {
+      const campDate = new Date("2025-07-14T09:00:00");
+      const now = new Date();
+      const timeDiff = campDate - now;
+
+      if (timeDiff > 0) {
+        const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+
+        document.getElementById('days').textContent = String(days).padStart(2, '0');
+        document.getElementById('hours').textContent = String(hours).padStart(2, '0');
+        document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
+        document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+      } else {
+        document.querySelector('.countdown-grid').innerHTML = 
+          '<div style="grid-column: 1/-1; text-align: center; font-size: 1.5rem; color: var(--primary); font-weight: 600;">營隊開始了！🎉</div>';
+      }
+    }
+
+    // 每秒更新倒數計時
+    setInterval(updateCountdown, 1000);
+    updateCountdown();
+
+    // 滾動動畫效果
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, observerOptions);
+
+    // 觀察所有需要動畫的元素
+    document.querySelectorAll('.fade-in').forEach(el => {
+      observer.observe(el);
+    });
+
+    // 表單提交處理
+    const form = document.getElementById('registrationForm');
+    form.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const submitBtn = form.querySelector('.submit-btn');
+      const originalText = submitBtn.textContent;
+      
+      // 顯示載入狀態
+      submitBtn.textContent = '送出中...';
+      submitBtn.disabled = true;
+      
+      try {
+        const response = await fetch(form.action, {
+          method: 'POST',
+          body: new FormData(form),
+          headers: {
+            'Accept': 'application/json'
+          }
+        });
+        
+        if (response.ok) {
+          // 成功提交
+          showSuccessMessage();
+          form.reset();
+        } else {
+          throw new Error('提交失敗');
+        }
+      } catch (error) {
+        alert('報名提交失敗，請稍後再試或直接聯絡我們！');
+      } finally {
+        // 恢復按鈕狀態
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
+      }
+    });
+
+    // 成功提交後的慶祝動畫
+    function showSuccessMessage() {
+      // 創建成功訊息
+      const successDiv = document.createElement('div');
+      successDiv.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        padding: 30px 40px;
+        border-radius: 20px;
+        box-shadow: var(--shadow-hover);
+        text-align: center;
+        z-index: 1000;
+        font-size: 1.2rem;
+        font-weight: 600;
+      `;
+      successDiv.innerHTML = `
+        <div style="font-size: 3rem; margin-bottom: 10px;">🎉</div>
+        <div>報名成功！</div>
+        <div style="font-size: 0.9rem; margin-top: 10px; opacity: 0.9;">我們將盡快與您聯繫</div>
+      `;
+      
+      document.body.appendChild(successDiv);
+      
+      // 創建彩紙效果
+      createConfetti();
+      
+      // 3秒後移除訊息
+      setTimeout(() => {
+        successDiv.remove();
+      }, 3000);
+    }
+
+    // 彩紙動畫
+    function createConfetti() {
+      const colors = ['#ff6b35', '#f7931e', '#4ecdc4', '#45b7d1', '#96ceb4'];
+      
+      for (let i = 0; i < 50; i++) {
+        const confetti = document.createElement('div');
+        confetti.style.cssText = `
+          position: fixed;
+          width: 10px;
+          height: 10px;
+          background: ${colors[Math.floor(Math.random() * colors.length)]};
+          top: -10px;
+          left: ${Math.random() * 100}vw;
+          border-radius: 50%;
+          pointer-events: none;
+          z-index: 999;
+        `;
+        
+        document.body.appendChild(confetti);
+        
+        // 動畫
+        confetti.animate([
+          { transform: 'translateY(0) rotate(0deg)', opacity: 1 },
+          { transform: `translateY(100vh) rotate(${Math.random() * 360}deg)`, opacity: 0 }
+        ], {
+          duration: Math.random() * 3000 + 2000,
+          easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+        }).addEventListener('finish', () => {
+          confetti.remove();
+        });
+      }
+    }
+
+    // 單選按鈕樣式優化
+    const radioOptions = document.querySelectorAll('.radio-option');
+    radioOptions.forEach(option => {
+      const radio = option.querySelector('input[type="radio"]');
+      radio.addEventListener('change', () => {
+        // 移除同組其他選項的選中樣式
+        const groupName = radio.name;
+        document.querySelectorAll(`input[name="${groupName}"]`).forEach(r => {
+          r.closest('.radio-option').style.borderColor = 'var(--border)';
+          r.closest('.radio-option').style.background = 'white';
+        });
+        
+        // 為選中的選項添加樣式
+        if (radio.checked) {
+          option.style.borderColor = 'var(--primary)';
+          option.style.background = 'rgba(255, 107, 53, 0.05)';
+        }
+      });
+    });
+
+    // 平滑滾動到表單
+    function scrollToForm() {
+      document.querySelector('.registration-section').scrollIntoView({
+        behavior: 'smooth'
+      });
+    }
+
+    // 初始化時顯示第一個元素
+    setTimeout(() => {
+      document.querySelector('.header .fade-in').classList.add('visible');
+    }, 300);
+  </script>
+</body>
+</html>
